@@ -1,0 +1,8 @@
+-Xmx15282m
+-Xms2048m
+-XX:+AggressiveOpts
+-Xverify:none
+-Dnetbeans.mainclass=org.esa.snap.main.Main
+-Dsun.java2d.noddraw=true
+-Dsun.awt.nopixfmt=true
+-Dsun.java2d.dpiaware=false

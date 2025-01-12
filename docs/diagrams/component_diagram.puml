@@ -1,0 +1,56 @@
+@startuml component_diagram
+
+skinparam backgroundColor #ffffff
+skinparam component {
+    BackgroundColor #e0f2ff
+    BorderColor #5b9bd5
+    FontColor #1f4e79
+}
+skinparam database {
+    BackgroundColor #e0f2ff
+    BorderColor #5b9bd5
+    FontColor #1f4e79
+}
+skinparam interface {
+    BackgroundColor #e0f2ff
+    BorderColor #5b9bd5
+    FontColor #1f4e79
+}
+skinparam collections {
+    BackgroundColor #e0f2ff
+    BorderColor #5b9bd5
+    FontColor #1f4e79
+}
+skinparam queue {
+    BackgroundColor #e0f2ff
+    BorderColor #5b9bd5
+    FontColor #1f4e79
+}
+skinparam ArrowColor #5b9bd5
+skinparam ArrowFontColor #1f4e79
+skinparam componentStyle uml2
+skinparam ArrowFontSize 11
+skinparam TitleFontColor #1f4e79
+
+' title Backend Components
+
+interface "API" as API
+component "App Server" as AppServer
+database "Relational Database" as Database
+queue "Tasks Queue" as TasksQueue
+queue "Messages Broker" as MessagesBroker
+collections "Worker(s)" as Worker
+component "Product Store" as ProductStore
+interface "Products" as ProductsInterface
+
+AppServer -left- API : Expose
+AppServer -up-> Database : "Read/Write"
+AppServer -right-> TasksQueue : "Enqueue Jobs"
+Worker -left-> TasksQueue : "Dequeue Jobs"
+AppServer -right-> MessagesBroker : "Pull Updates"
+Worker --> MessagesBroker : "Push Updates"
+Worker -up-> ProductStore : "Write"
+Worker -up-> Database : "Read/Write"
+ProductStore -left- ProductsInterface : Expose
+
+@enduml

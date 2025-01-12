@@ -1,0 +1,95 @@
+services:
+  db:
+    image: postgres:17.0
+    env_file:
+      - ${BACKEND_PATH}/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - service_network
+    restart: on-failure:15
+  
+  redis:
+    image: redis:7.4
+    volumes:
+      - redis_data:/data
+    networks:
+      - service_network
+    restart: on-failure:15
+
+  geoserver:
+    image: docker.osgeo.org/geoserver:2.26.1
+    env_file:
+      - ${BACKEND_PATH}/.env
+    ports:
+      - 8080:8080
+    volumes:
+      - geoserver_data:/opt/geoserver_data
+      - products_data:/data
+    networks:
+      - service_network
+    restart: on-failure:15
+  
+  backend:
+    build:
+      context: ${BACKEND_PATH}
+      dockerfile: Dockerfile
+    command: conda run --no-capture-output -n floodpy_gpu python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    env_file:
+      - ${BACKEND_PATH}/.env
+    volumes:
+      - ${BACKEND_PATH}:/backend
+      - products_data:/home/appuser/floodpy_projects/products
+    depends_on:
+      - db
+      - redis
+      - geoserver
+    networks:
+      - service_network
+    restart: on-failure:15
+    
+  worker:
+    build:
+      context: ${BACKEND_PATH}
+      dockerfile: Dockerfile
+    command: conda run --no-capture-output -n floodpy_gpu celery -A floodviewer worker --loglevel=info --concurrency=1
+    env_file:
+      - ${BACKEND_PATH}/.env
+    volumes:
+      - ${BACKEND_PATH}:/worker
+      - products_data:/home/appuser/floodpy_projects/products
+    depends_on:
+      - db
+      - redis
+      - geoserver
+      - backend
+    networks:
+      - service_network
+    restart: on-failure:15
+  
+  frontend:
+    build:
+      context: ${FRONTEND_PATH}
+      dockerfile: Dockerfile.dev
+    ports:
+      - 5173:5173
+    env_file:
+      - ${FRONTEND_PATH}/.env
+    volumes:
+      - ${FRONTEND_PATH}/src:/frontend/src
+    depends_on:
+      - backend
+    networks:
+      - service_network
+    restart: on-failure:15
+  
+volumes:
+  postgres_data:
+  geoserver_data:
+  products_data:
+  redis_data:
+
+networks:
+  service_network:

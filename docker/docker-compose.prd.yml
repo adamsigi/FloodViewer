@@ -1,0 +1,104 @@
+services:
+  db:
+    image: postgres:17.0
+    env_file:
+      - ${BACKEND_PATH}/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - service_network
+    restart: always
+  
+  redis:
+    image: redis:7.4
+    volumes:
+      - redis_data:/data
+    networks:
+      - service_network
+    restart: always
+
+  geoserver:
+    image: docker.osgeo.org/geoserver:2.26.1
+    env_file:
+      - ${BACKEND_PATH}/.env
+    volumes:
+      - geoserver_data:/opt/geoserver_data
+      - products_data:/data
+    networks:
+      - service_network
+    restart: always
+  
+  backend_wsgi:
+    build:
+      context: ${BACKEND_PATH}
+      dockerfile: Dockerfile
+    command: conda run --no-capture-output -n floodpy_gpu conda run --no-capture-output -n floodpy_gpu uwsgi --ini uwsgi.ini
+    env_file:
+      - ${BACKEND_PATH}/.env
+    depends_on:
+      - db
+      - redis
+      - geoserver
+    networks:
+      - service_network
+    restart: always
+  
+  backend_asgi:
+    build:
+      context: ${BACKEND_PATH}
+      dockerfile: Dockerfile
+    command: conda run --no-capture-output -n floodpy_gpu conda run --no-capture-output -n floodpy_gpu daphne -b 0.0.0.0 -p 8000 floodviewer.asgi:application
+    env_file:
+      - ${BACKEND_PATH}/.env
+    depends_on:
+      - db
+      - redis
+      - geoserver
+    networks:
+      - service_network
+    restart: always
+    
+  worker:
+    build:
+      context: ${BACKEND_PATH}
+      dockerfile: Dockerfile
+    command: conda run --no-capture-output -n floodpy_gpu celery -A floodviewer worker --loglevel=info --concurrency=1
+    env_file:
+      - ${BACKEND_PATH}/.env
+    volumes:
+      - products_data:/home/appuser/floodpy_projects/products
+    depends_on:
+      - db
+      - redis
+      - geoserver
+      - backend_wsgi
+      - backend_asgi
+    networks:
+      - service_network
+    restart: always
+  
+  frontend:
+    build:
+      context: ${FRONTEND_PATH}
+      dockerfile: Dockerfile.prd
+    ports:
+      - 5173:5173
+      - 8000:8000
+      - 8080:8080
+    env_file:
+      - ${FRONTEND_PATH}/.env
+    depends_on:
+      - backend_wsgi
+      - backend_asgi
+    networks:
+      - service_network
+    restart: always
+  
+volumes:
+  postgres_data:
+  geoserver_data:
+  products_data:
+  redis_data:
+
+networks:
+  service_network:

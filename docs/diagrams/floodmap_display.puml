@@ -1,0 +1,57 @@
+@startuml floodmap_display
+
+skinparam actor {
+    BackgroundColor #e0f2ff
+    BorderColor #5b9bd5
+    FontColor #1f4e79
+}
+skinparam participant {
+    BackgroundColor #e0f2ff
+    BorderColor #5b9bd5
+    FontColor #1f4e79
+}
+skinparam ArrowColor #5b9bd5
+skinparam ArrowFontColor #1f4e79
+skinparam componentStyle uml2
+skinparam ArrowFontSize 11
+skinparam NoteFontSize 11
+skinparam NoteBackgroundColor #e0f2ff
+skinparam maxmessagesize 240
+
+' title Floodmap Display Flow
+skinparam TitleFontColor #1f4e79
+
+
+actor User  
+participant Frontend
+participant Backend
+
+User     ->> Frontend : Visit floodmap page on:\n/floodmaps/123
+Frontend -> Backend : GET /api/floodmaps/123/
+Frontend <-- Backend : 200 OK with floodmap data
+
+hnote over Frontend : Check job status and stage in floodmap data
+
+group#e0f2ff <font size=11>If job is in progress:
+Frontend -> Backend : <b>[Upgrade to WebSocket]</b>\nGET /ws/api/floodmaps/123/updates/
+Frontend <-- Backend : 101 Switching Protocols
+Frontend <-- Backend : Job status update
+Frontend ->> User : Display new status
+
+Frontend <-- Backend : Job status update
+Frontend ->> User : Display new status
+
+Frontend <-- Backend : Job status update
+Frontend ->> User : Display new status
+
+
+hnote over Frontend : When job is done retrieve products
+
+Frontend -> Backend : GET /api/floodmaps/123/
+Frontend <-- Backend : 200 OK with floodmap data\nincluding products
+
+end
+
+Frontend ->> User : Display flooded areas and\nother products
+
+@enduml

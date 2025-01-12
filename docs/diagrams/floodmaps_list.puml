@@ -1,0 +1,48 @@
+@startuml floodmaps_list
+
+skinparam actor {
+    BackgroundColor #e0f2ff
+    BorderColor #5b9bd5
+    FontColor #1f4e79
+}
+skinparam participant {
+    BackgroundColor #e0f2ff
+    BorderColor #5b9bd5
+    FontColor #1f4e79
+}
+skinparam ArrowColor #5b9bd5
+skinparam ArrowFontColor #1f4e79
+skinparam componentStyle uml2
+skinparam ArrowFontSize 11
+skinparam NoteFontSize 11
+skinparam NoteBackgroundColor #e0f2ff
+skinparam maxmessagesize 240
+
+' title Floodmap List Flow
+skinparam TitleFontColor #1f4e79
+
+
+actor User  
+participant Frontend
+participant Backend
+
+User     ->> Frontend : Visit floodmap list on:\n/floodmaps
+Frontend -> Backend : GET /api/floodmaps/
+Frontend <-- Backend : 200 OK with paginated data for the 1st page of floodmaps
+Frontend ->> User : Display the 1st page with up to 12 floodmaps
+
+User     ->> Frontend : Request 2nd page
+Frontend -> Backend : GET /api/floodmaps/?page=2
+Frontend <-- Backend : 200 OK with paginated data for the 2nd page of floodmaps
+Frontend ->> User : Display the 2nd page with up to 12 floodmaps
+
+
+
+User     ->> Frontend : Search for floodmaps with pattern "Lymni" in name
+Frontend -> Backend : GET /api/floodmaps/?flood_name=Lymni
+Frontend <-- Backend : 200 OK with paginated data of floodmaps with names containing "Lymni"
+Frontend ->> User : Display 1st page of floodmaps with names containing "Lymni"
+
+
+
+@enduml

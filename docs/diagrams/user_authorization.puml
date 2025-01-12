@@ -1,0 +1,43 @@
+@startuml user_authorization
+
+skinparam actor {
+    BackgroundColor #e0f2ff
+    BorderColor #5b9bd5
+    FontColor #1f4e79
+}
+skinparam participant {
+    BackgroundColor #e0f2ff
+    BorderColor #5b9bd5
+    FontColor #1f4e79
+}
+skinparam ArrowColor #5b9bd5
+skinparam ArrowFontColor #1f4e79
+skinparam componentStyle uml2
+skinparam ArrowFontSize 11
+skinparam NoteFontSize 11
+skinparam NoteBackgroundColor #e0f2ff
+skinparam maxmessagesize 240
+skinparam TitleFontColor #1f4e79
+
+' title Authorization Flow
+
+participant Frontend
+participant Backend
+
+Frontend -> Backend : User Credentials (Email & Password)
+Frontend <-- Backend : Access Token & Refresh Token
+
+Frontend -> Backend : User Request with Access Token
+Frontend <-- Backend : Personalized Response
+
+hnote over Frontend, Backend : Access Token expires
+
+group#e0f2ff <font size=10>Transparent to the user
+Frontend -> Backend : Renew Access Token with Refresh Token
+Frontend <-- Backend : New Access Token
+end
+
+Frontend -> Backend : User Request with new Access Token
+Frontend <-- Backend : Personalized Response
+
+@enduml

@@ -1,0 +1,73 @@
+@startuml relational_db_schema
+
+hide circle
+skinparam backgroundColor #ffffff
+skinparam class {
+    BackgroundColor #e0f2ff
+    BorderColor #5b9bd5
+    FontColor #1f4e79
+}
+skinparam ArrowColor #5b9bd5
+skinparam ArrowFontColor #1f4e79
+skinparam TitleFontColor #1f4e79
+
+' title Relational DB Schema
+
+entity User {
+    + id : int8 <<PK>>
+    --
+    email : varchar(255) <<unique>>
+    password : varchar(128) -- hashed + salted
+    is_superuser : bool
+    is_active : bool
+    is_staff : bool
+    last_login : timestampz
+    last_password_change : timestampz
+}
+
+entity Floodmap {
+    + id : int8 <<PK>>
+    --
+    name : varchar(40)
+    min_lat : float8
+    min_lng : float8
+    max_lat : float8
+    max_lng : float8
+    flood_date : timestampz
+    days_before_flood : int4
+    days_after_flood : int4
+    owner_id : int8 <<FK>> -- User(id)
+}
+
+
+entity Product {
+    + floodmap_id : int8 <<PK,FK>> -- Floodmap(id)
+    --
+    built_at : timestampz
+    geoserver_workspace : varchar(200)
+    esa_world_cover_layer : varchar(200)
+    s1_backscatter_layer : varchar(200)
+    t_score_layer : varchar(200)
+    flooded_regions_layer : varchar(200)
+    thumbnail_url_params : varchar(500)
+    land_cover_categories : _int4
+    s1_backscatter_quantiles : _int4
+    t_score_quantiles : _int4
+}
+
+
+entity Job {
+    + floodmap_id : int8 <<PK,FK>> -- Floodmap(id)
+    --
+    status : varchar(50)
+    stage : varchar(200)
+    error_trace : varchar(200)
+    posted_at : timestampz
+}
+
+
+User "0..1" -- "0..*" Floodmap : owner
+Floodmap "1" -left- "0..1" Product : "has"
+Floodmap "1" -right- "1" Job : "has"
+
+@enduml
