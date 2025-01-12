@@ -200,7 +200,7 @@ describe('Wizard component', () => {
         )
         server.listen()
         // Mock websocket job updates.
-        globalThis.WebSocket = createJobUpdatesWebSocketMock(true)  // mock update for failed job
+        vi.stubGlobal('WebSocket', createJobUpdatesWebSocketMock(true))
 
         await act(() => {
             fireEvent.change(floodNameInput, { target: { value: 'Test Flood' } })
@@ -219,6 +219,7 @@ describe('Wizard component', () => {
             // Last mocked job update has failed status and error trace
             expect(screen.getByText(/Failed trace for testing/)).toBeInTheDocument()
         }, {'timeout': 1000 })
+        vi.restoreAllMocks()
         server.close()
     })
 })

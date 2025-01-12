@@ -44,7 +44,7 @@ describe('Floodmap component', () => {
             }),
         )
         server.listen()
-        globalThis.WebSocket = createJobUpdatesWebSocketMock(true)  // mock update for failed job
+        vi.stubGlobal('WebSocket', createJobUpdatesWebSocketMock(true))  // mock update for failed job
         await renderPath(`/floodmaps/${floodmapId}`)
         await finishLoading()
         expect(screen.getByText(/37.923/)).toBeInTheDocument()
@@ -59,6 +59,7 @@ describe('Floodmap component', () => {
             expect(screen.getByText(/Your request to run Floodpy has been submitted but encountered an /)).toBeInTheDocument()
             expect(screen.getByText(/Failed trace for testing/)).toBeInTheDocument()
         }, {'timeout': 1000 })
+        vi.restoreAllMocks()
         server.close()
     })
 
@@ -81,7 +82,7 @@ describe('Floodmap component', () => {
             Rectangle: vi.fn(() => null)
         }))
         server.listen()
-        globalThis.WebSocket = createJobUpdatesWebSocketMock()  // mock update for succeeded job
+        vi.stubGlobal('WebSocket', createJobUpdatesWebSocketMock())  // mock update for succeeded job
         await renderPath(`/floodmaps/${floodmapId}`)
         await finishLoading()
         expect(screen.getByText(/37.923/)).toBeInTheDocument()

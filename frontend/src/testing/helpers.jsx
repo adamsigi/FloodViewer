@@ -44,7 +44,7 @@ export function delay(ms) {
 
 
 export function createJobUpdatesWebSocketMock(toFail = false) {
-    return class JobUpdatesWebSocketMock {
+    return class WebSocket {
         constructor(url) {
             const urlRegex = new RegExp(`${VITE_BACKEND_WS_URL}/ws/api/floodmaps/\\d+/updates/`)
             if (url.match(urlRegex)) {
