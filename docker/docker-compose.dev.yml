@@ -40,7 +40,7 @@ services:
     env_file:
       - ${BACKEND_PATH}/.env
     volumes:
-      - ${BACKEND_PATH}:/backend
+      - ${BACKEND_PATH}:/home/appuser/backend
       - products_data:/home/appuser/floodpy_projects/products
     depends_on:
       - db
@@ -58,7 +58,7 @@ services:
     env_file:
       - ${BACKEND_PATH}/.env
     volumes:
-      - ${BACKEND_PATH}:/worker
+      - ${BACKEND_PATH}:/home/appuser/backend
       - products_data:/home/appuser/floodpy_projects/products
     depends_on:
       - db

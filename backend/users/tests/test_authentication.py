@@ -31,7 +31,7 @@ class TestAuthentication(APITestCase):
         refresh_cookie = response.cookies.get('refresh_token')
         self.assertTrue(refresh_cookie['httponly'])
         self.assertTrue(refresh_cookie['samesite'])
-        self.assertTrue(refresh_cookie['secure'])
+        self.assertEqual(refresh_cookie['secure'], True if settings.HTTPS_ONLY else '')
 
     def test_logout_deletes_refresh_token_cookie(self):
         login_response = self.client.post(reverse('login'), user_data())

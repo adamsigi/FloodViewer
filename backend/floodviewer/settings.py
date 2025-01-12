@@ -275,8 +275,35 @@ LOGGING = {
     },
 }
 
-# Logging for tests
+# Internationalization
+# https://docs.djangoproject.com/en/5.0/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_TZ = True
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Overrides during testing.
 if "test" in sys.argv:
+    # Ensure proper mode is set.
+    DEBUG = True
+    GHOST_MODE = True
+
+    # No throttling
+    REST_FRAMEWORK = {
+        'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
+        'DEFAULT_AUTHENTICATION_CLASSES': [
+            'rest_framework_simplejwt.authentication.JWTAuthentication',
+        ],
+        'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+    }
+    
+    # Debug logs (off by default)
     LOGGING = {
         "version": 1,
         "disable_existing_loggers": False,
@@ -316,17 +343,3 @@ if "test" in sys.argv:
             },
         },
     }
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_TZ = True
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
