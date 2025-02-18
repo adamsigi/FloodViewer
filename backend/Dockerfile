@@ -42,7 +42,7 @@ WORKDIR /home/appuser/backend
 
 COPY requirements.txt .
 RUN conda run -n floodpy_gpu pip install -r requirements.txt
-RUN conda install -n floodpy_gpu uwsgi
+RUN conda install -n floodpy_gpu -c conda-forge uwsgi=2.0.21=py38h0268a7a_0
 
 COPY --chown=appuser . .
 RUN mkdir -p /home/appuser/floodpy_projects/products

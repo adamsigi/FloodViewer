@@ -21,11 +21,9 @@ function setAuth(accessTokenResponse) {
     accessTokenExpiration = jwtDecode(accessToken).exp
     localStorage.setItem(STORAGE_KEY, STORAGE_VALUE)
     triggerStorageEvent(STORAGE_KEY, STORAGE_VALUE)
-    console.log('setAuth: ', accessToken)
 }
 
 export function clearAuth() {
-    console.log('clearAuth: ', accessToken)
     accessToken = null
     accessTokenExpiration = null
     localStorage.removeItem(STORAGE_KEY)

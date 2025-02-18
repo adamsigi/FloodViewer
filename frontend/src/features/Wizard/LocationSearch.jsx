@@ -36,7 +36,6 @@ export default function LocationSearch({ leafletMap }) {
             .then(response => response.json())
             .then(data => {
                 setSearchResults(data.slice(0, displayLocationsCount))
-                console.log(data)
             })
             .finally(() => {
                 setDisableSearch(false)
