@@ -39,7 +39,7 @@ export default function AppLayout() {
 
 function MainContainer({ children }) {
     return (
-        <Box sx={{ m: 0, p: 0, width: '100%', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ m: 0, p: 0, width: '100%', height: '100dvh', display: 'flex', flexDirection: 'column' }}>
             <ThemeProvider theme={theme}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <CssBaseline />

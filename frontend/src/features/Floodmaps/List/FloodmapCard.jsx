@@ -12,6 +12,7 @@ import TableBody from '@mui/material/TableBody'
 import TableRow from '@mui/material/TableRow'
 import LoopIcon from '@mui/icons-material/Loop'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { SUCCEEDED_STATUS, PROGRESSING_STATUS } from "@utils/constants"
 import { TableCellBorderless } from '@components/StyledElements'
 import dayjs from 'dayjs'
@@ -23,6 +24,7 @@ const VITE_GEOSERVER_URL = import.meta.env.VITE_GEOSERVER_URL
 
 export default function FloodmapCard({ floodmap }) {
      const [loading, setLoading] = useState(true)
+     const isLargeScreen = useMediaQuery(theme => theme.breakpoints.up('lg'))
      return (
           <>
                <Card
@@ -94,7 +96,7 @@ export default function FloodmapCard({ floodmap }) {
                                    )}
                          </Box>
 
-                         <CardContent sx={{ p: 1, }}>
+                         <CardContent sx={{ p: isLargeScreen ? '8px' : '4px'}}>
                               <Typography variant="h5">
                                    {floodmap.name}
                               </Typography>

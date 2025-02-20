@@ -82,11 +82,15 @@ services:
       context: ${FRONTEND_PATH}
       dockerfile: Dockerfile.prd
     ports:
-      - 5173:5173
+      - 80:80
+      - 443:443
       - 8000:8000
       - 8080:8080
     env_file:
       - ${FRONTEND_PATH}/.env
+    volumes:
+      - certbot_data:/var/www/certbot/
+      - ssl_data:/etc/nginx/ssl/
     depends_on:
       - backend_wsgi
       - backend_asgi
@@ -94,11 +98,20 @@ services:
       - service_network
     restart: always
   
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot_data:/var/www/certbot/
+      - ssl_data:/etc/letsencrypt/
+  
 volumes:
   postgres_data:
   geoserver_data:
   products_data:
   redis_data:
+  certbot_data:
+  ssl_data:
+
 
 networks:
   service_network:

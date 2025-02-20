@@ -21,7 +21,7 @@ export function Error({ trace = 'Sorry, an unexpected error has occurred.' }) {
     }
     return (
         <Stack
-            sx={{ height: '100vh', m: 1, pb: 6 }}
+            sx={{ height: '100dvh', m: 1, pb: 6 }}
             direction="column"
             justifyContent="center"
             alignItems="center"
@@ -43,7 +43,7 @@ export function Error({ trace = 'Sorry, an unexpected error has occurred.' }) {
 export function NotFound() {
     return (
         <Stack
-            sx={{ height: '100vh', m: 1, pb: 6 }}
+            sx={{ height: '100dvh', m: 1, pb: 6 }}
             direction="column"
             justifyContent="center"
             alignItems="center"

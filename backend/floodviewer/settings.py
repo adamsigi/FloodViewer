@@ -42,9 +42,10 @@ GHOST_MODE = config('GHOST_MODE', cast=bool)
 if not DEBUG:
     EMAIL_HOST_USER = config('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+FRONTEND_URL = ('http://' if DEBUG else 'https://') + FRONTEND_DOMAIN
 
-FRONTEND_URL = 'http://' + FRONTEND_DOMAIN
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
