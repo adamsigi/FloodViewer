@@ -39,10 +39,6 @@ HTTPS_ONLY = config("HTTPS_ONLY", cast=bool)
 DEBUG = config('DEBUG', cast=bool)
 GHOST_MODE = config('GHOST_MODE', cast=bool)
 
-if not DEBUG:
-    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 FRONTEND_URL = ('http://' if DEBUG else 'https://') + FRONTEND_DOMAIN
 
@@ -83,15 +79,20 @@ INSTALLED_APPS = [
     'django_extensions',
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'webmaster@localhost'
 if not DEBUG:
+    # email credentials
+    EMAIL_HOST = config('EMAIL_HOST')
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.office365.com'
-    DEFAULT_FROM_EMAIL = 'floodviewer@noreply.dev'
-    SERVER_EMAIL = DEFAULT_FROM_EMAIL
     EMAIL_PORT = 587
-    EMAIL_USE_TLS = True 
+    EMAIL_USE_TLS = True
+    EMAIL_USE_SSL = False
+    # nginx header
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    DEFAULT_FROM_EMAIL = 'webmaster@localhost'
 
 
 CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'
