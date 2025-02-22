@@ -35,10 +35,11 @@ export async function refreshAccessToken() {
         method: 'POST',
         credentials: 'include',
     })
-    if (res.status === 401) {
-        clearAuth()  // no longer authenticated
-    }
     const responseJson = await res.json()
+    if (res.status === 401 || res.status === 400) {
+        clearAuth()  // no longer authenticated of refresh token missing
+        return { ...responseJson, status: 401 }
+    }
     setAuth(responseJson)
     return { ...responseJson, status: res.status }
 }

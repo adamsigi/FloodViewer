@@ -21,15 +21,15 @@ export default function JobProgress({ lastJobUpdate, }) {
         <>
             <Dialog
                 open={true}
-                sx={{ mt: '64px', }}
+                sx={{ mt: '64px', ariaHidden: "false"}}
                 PaperProps={{
-                    sx: { maxHeight: (isShortScreen || isNotExtraSmallScreen) ? '90%' : window.innerHeight - 220, m: 1, mt: (isShortScreen || isNotExtraSmallScreen) ? 1 : 10 }
+                    sx: { width: '445px', border: 'solid', maxHeight: (isShortScreen || isNotExtraSmallScreen) ? '90%' : window.innerHeight - 220, m: 1, mt: (isShortScreen || isNotExtraSmallScreen) ? 1 : 10 }
                 }}
             >
-                <Box sx={{ border: 'solid', maxWidth: '445px', }}>
-                    <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }}>
+                <Box sx={{  overflow: 'auto'}}>
+                    <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',}}>
                         <DialogTitle sx={{ p: 0, pb: 1 }}>Floodpy Job Status</DialogTitle>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start', justifyContent: 'center', }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start', justifyContent: 'center', wordBreak: 'break-word'}}>
                             {lastJobUpdate.status === PROGRESSING_STATUS &&
                                 <Typography>Your request to run Floodpy has been submitted and is now in <Typography color='primary' component='span'>progress</Typography>. Please wait as it goes through the following stages.</Typography>
 
